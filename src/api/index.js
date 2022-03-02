@@ -63,3 +63,5 @@ export const reqDeleteImage = (name) => ajax(BASE + '/manage/img/delete', {name}
 export const reqProductAddOrUpdate = (product) => ajax(BASE + '/manage/product/' + ( product._id?'update':'add'), product, 'POST')
 
 export const reqRoles = () => ajax(BASE + '/manage/role/list')
+export const reqAddRole = (roleName) => ajax(BASE + '/manage/role/add',{roleName},'POST')
+export const reqUpdateRole = (role) => ajax(BASE + '/manage/role/update',role,'POST')
