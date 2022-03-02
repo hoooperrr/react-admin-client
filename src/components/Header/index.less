@@ -1,0 +1,52 @@
+.my-header{
+  height: 80px;
+  color: #000000;
+  background-color: #ffffff;
+  //border-bottom: 1px solid #e6beea;
+  .header-top{
+    height: 40px;
+    line-height: 40px;
+    padding-right: 30px;
+    text-align: right;
+    border-bottom: 1px solid darkcyan;
+    span{
+      margin-right: 10px;
+    }
+  }
+  .header-bottom{
+    height: 40px;
+    display: flex;
+    align-items: center;
+    .header-bottom-left{
+      position: relative;
+      flex: 1;
+      height: inherit;
+      line-height: 40px;
+      text-align: center;
+      font-size: 20px;
+      &::after {
+        content: '';
+        position: absolute;//相对于开启定位的父元素的50%
+        right: 50%;
+        top: 100%;
+        transform: translateX(50%);
+        border-top: 18px solid white ;
+        border-right: 20px solid transparent;
+        border-bottom: 20px solid transparent;
+        border-left: 20px solid transparent;
+      }
+    }
+    .header-bottom-right{
+      flex: 3;
+      text-align: right;
+      margin-right: 30px;
+      img{
+        margin: 0 15px;
+        height: 20px;
+      }
+      span{
+        margin:0 5px
+      }
+    }
+  }
+}
