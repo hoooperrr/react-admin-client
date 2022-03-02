@@ -14,10 +14,11 @@ class AuthTree extends Component {
     constructor(props) {
         super(props);
         const {menus} = this.props.role;
-        this.state={
-            checkedKeys:menus
+        this.state = {
+            checkedKeys: menus
         }
     }
+
     getTreeNodes = (menuList) => {
         return menuList.reduce((pre, menu) => {
             pre.push({
@@ -43,6 +44,9 @@ class AuthTree extends Component {
 
     onSelect = (selectedKeys, info) => {
         console.log('selected', selectedKeys, info);
+        this.setState({
+            checkedKeys: selectedKeys,
+        })
     };
 
     onCheck = (checkedKeys, info) => {
@@ -51,13 +55,21 @@ class AuthTree extends Component {
             checkedKeys
         })
     };
-    getTree=()=>{
+    getTree = () => {
         return this.state.checkedKeys
     }
 
     componentWillMount() {
         // this.props.getAddForm(this.formRef)
         this.treeNodes = this.getTreeNodes(menuConfig)
+    }
+
+    // componentWillReceiveProps(nextProps, nextContext) {
+    // }
+    //若state的值在任何时候都取决于props，那么可以使用getDerivedStateFromProps
+    static getDerivedStateFormProps(props, state) {
+        console.log('der')
+        return {checkedKeys: props.role.menus}
     }
 
     render() {
@@ -81,7 +93,7 @@ class AuthTree extends Component {
                     onSelect={this.onSelect}
                     onCheck={this.onCheck}
                     treeData={this.treeNodes}
-               />
+                />
 
             </div>
         );

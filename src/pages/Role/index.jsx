@@ -4,6 +4,8 @@ import {PAGE_SIZE} from '../../utils/constants'
 import {reqAddRole, reqRoles, reqUpdateRole} from "../../api";
 import AddFormContent from "./AddFormContent";
 import AuthTree from "./AuthTree";
+import memoryUtils from "../../utils/memoryUtils";
+import {formateDate} from "../../utils/dateUtils";
 
 class Role extends Component {
     state = {
@@ -29,10 +31,12 @@ class Role extends Component {
             {
                 title: '创建时间',
                 dataIndex: "create_time",
+                render: (create_time) => formateDate(create_time)
             },
             {
                 title: '授权时间',
                 dataIndex: "auth_time",
+                render: formateDate
             },
             {
                 title: '授权人',
@@ -63,6 +67,7 @@ class Role extends Component {
         this.setState({isAdd: true});
     }
     handleAuth = () => {
+        // AuthTree.forceUpdate()
         this.setState({isAuth: true});
     }
     addRole = () => {
@@ -94,6 +99,7 @@ class Role extends Component {
         const {roles, role} = this.state
         this.setState({isAuth: false});
         role.menus = this.treeRef.current.getTree()
+        role.auth_name = memoryUtils.user.username
         const result = await reqUpdateRole(role)
         if (result.status === 0) {
             message.success('角色权限修改成功')
