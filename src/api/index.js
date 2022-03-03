@@ -60,8 +60,10 @@ export const reqUpdateProductStatus = (productId, status) => ajax(BASE + '/manag
     status
 }, 'POST')
 export const reqDeleteImage = (name) => ajax(BASE + '/manage/img/delete', {name}, 'POST')
-export const reqProductAddOrUpdate = (product) => ajax(BASE + '/manage/product/' + ( product._id?'update':'add'), product, 'POST')
+export const reqProductAddOrUpdate = (product) => ajax(BASE + '/manage/product/' + (product._id ? 'update' : 'add'), product, 'POST')
 
 export const reqRoles = () => ajax(BASE + '/manage/role/list')
-export const reqAddRole = (roleName) => ajax(BASE + '/manage/role/add',{roleName},'POST')
-export const reqUpdateRole = (role) => ajax(BASE + '/manage/role/update',role,'POST')
+export const reqAddRole = (roleName) => ajax(BASE + '/manage/role/add', {roleName}, 'POST')
+export const reqUpdateRole = (role) => ajax(BASE + '/manage/role/update', role, 'POST')
+export const reqUsers = () => ajax(BASE + '/manage/user/list')
+export const reqDeleteUsers = (userId) => ajax(BASE + '/manage/user/delete',{userId},'POST')

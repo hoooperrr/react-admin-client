@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {Form, Input, Tree,} from "antd";
 import PropTypes from "prop-types";
 import menuConfig from "../../../config/menuConfig";
 
 const {Item} = Form
 
-class AuthTree extends Component {
+class AuthTree extends PureComponent {
 
     static propTypes = {
         role: PropTypes.object.isRequired,
