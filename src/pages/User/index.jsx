@@ -3,7 +3,7 @@ import {Button, Card, message, Modal, Table} from "antd";
 import {formateDate} from "../../utils/dateUtils";
 import LinkButton from "../../components/LinkButton";
 import AddForm from "./AddForm";
-import {reqDeleteUsers, reqUsers} from "../../api";
+import {reqAddUser, reqDeleteUsers, reqUsers} from "../../api";
 import {PAGE_SIZE} from "../../utils/constants";
 import {ExclamationCircleOutlined} from "@ant-design/icons";
 
@@ -85,8 +85,12 @@ class User extends Component {
 
 
     }
-    addOrUpdateUser = () => {
-
+    addOrUpdateUser =async () => {
+        this.setState({isShow:false})
+        const user = this.formRef.current.getFieldsValue()
+        this.formRef.current.resetFields();
+        const result = await reqAddUser(user)
+        this.getUsers()
     }
     handleCancel = () => {
         this.setState({isShow: false})
@@ -97,8 +101,8 @@ class User extends Component {
     }
 
     render() {
-        const {users, isShow} = this.state
-        const title = (<Button type='primary' onClick={()=>this.setState({isShow: true})}>创建用户</Button>)
+        const {users, isShow,roles} = this.state
+        const title = (<Button type='primary' onClick={() => this.setState({isShow: true})}>创建用户</Button>)
         return (
 
             <Card title={title}>
@@ -114,7 +118,7 @@ class User extends Component {
                     onOk={this.addOrUpdateUser}
                     onCancel={this.handleCancel}
                 >
-                    <AddForm/>
+                    <AddForm roles={roles} getAddForm={formRef => this.formRef = formRef}/>
                 </Modal>
             </Card>
         );

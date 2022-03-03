@@ -36,7 +36,7 @@ class Role extends Component {
             {
                 title: '授权时间',
                 dataIndex: "auth_time",
-                render: formateDate
+                render: (auth_time) => formateDate(auth_time)
             },
             {
                 title: '授权人',
@@ -100,12 +100,16 @@ class Role extends Component {
         this.setState({isAuth: false});
         role.menus = this.treeRef.current.getTree()
         role.auth_name = memoryUtils.user.username
+        role.auth_time = Date.now()
         const result = await reqUpdateRole(role)
+
         if (result.status === 0) {
             message.success('角色权限修改成功')
             this.setState(state => {
                 // roles.find(r => r._id === role._id).menus = role.menus
-                return [...state.roles]
+                return {
+                    roles: [...state.roles]
+                }
             })
         } else {
             message.error('角色权限修改失败')
