@@ -9,7 +9,7 @@ class AddForm extends PureComponent {
     formRef = React.createRef()
     static propTypes = {
         roles: PropTypes.array.isRequired,
-        // parentId: PropTypes.string.isRequired,
+        user: PropTypes.object,
         getAddForm: PropTypes.func.isRequired,
         // handleChange:PropTypes.func.isRequired,
     }
@@ -20,6 +20,8 @@ class AddForm extends PureComponent {
 
     render() {
         const {roles} = this.props
+        const user = this.props.user || {}
+        console.log('prop render', user)
         const formLayout = {
             labelCol: {span: 2},
             wrapperCol: {span: 15, offset: 4},
@@ -28,13 +30,17 @@ class AddForm extends PureComponent {
         return (
             <div>
                 <Form {...formLayout} preserve={false} ref={this.formRef}
-                      initialValues={{username: ''}}>
+                      initialValues={user}>
                     <Item name='username' label='用户名' rules={[{required: true, message: '请输入用户名'}]}>
                         <Input placeholder='请输入用户名'/>
                     </Item>
-                    <Item name='password' label='密码' rules={[{required: true, message: '请输入密码'}]}>
-                        <Input type='password' placeholder='请输入密码'/>
-                    </Item>
+                    {
+                        user._id ? null : (
+                            <Item name='password' label='密码' rules={[{required: true, message: '请输入密码'}]}>
+                                <Input type='password' placeholder='请输入密码'/>
+                            </Item>)
+                    }
+
                     <Item name='phone' label='手机号' rules={[{required: true, message: '请输入手机号'}]}>
                         <Input placeholder='请输入手机号'/>
                     </Item>

@@ -57,11 +57,11 @@ const menuConfig =  [
         ]
     },
 
-    {
-        title: '订单管理',
-        key: '/order',
-        icon: 'windows',
-    },
+    // {
+    //     title: '订单管理',
+    //     key: '/order',
+    //     icon: 'windows',
+    // },
 ];
 
 export default menuConfig

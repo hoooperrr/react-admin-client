@@ -56,7 +56,6 @@ class Login extends Component {
         return Promise.resolve();
     }
 
-
     render() {
         const user = memoryUtils.user;
         if(user && user._id) {

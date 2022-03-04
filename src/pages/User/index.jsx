@@ -3,7 +3,7 @@ import {Button, Card, message, Modal, Table} from "antd";
 import {formateDate} from "../../utils/dateUtils";
 import LinkButton from "../../components/LinkButton";
 import AddForm from "./AddForm";
-import {reqAddUser, reqDeleteUsers, reqUsers} from "../../api";
+import {reqDeleteUsers, reqUsers, reqAddorUpdateUsers} from "../../api";
 import {PAGE_SIZE} from "../../utils/constants";
 import {ExclamationCircleOutlined} from "@ant-design/icons";
 
@@ -11,9 +11,9 @@ import {ExclamationCircleOutlined} from "@ant-design/icons";
 class User extends Component {
     constructor(props) {
         super(props);
-        this.colums = [{
+        this.columns = [{
             title: '用户名',
-            dataIndex: 'name',
+            dataIndex: 'username',
         }, {
             title: '邮箱',
             dataIndex: 'email',
@@ -27,13 +27,13 @@ class User extends Component {
         }, {
             title: '所属角色',
             dataIndex: 'role_id',
-            render: (role_id) => this.roleName[role_id]
+            render: (role_id) => this.roleNames[role_id]
             // render: (role_id) => this.state.roles.find(role => role._id === role_id).name
         }, {
             title: '操作',
             render: (user) =>
                 (<span>
-                    <LinkButton onClick={() => this.update(user)}>修改</LinkButton>
+                    <LinkButton onClick={() => this.updateUser(user)}>修改</LinkButton>
                     <LinkButton onClick={() => this.delete(user)}>删除</LinkButton>
                 </span>)
         },
@@ -43,25 +43,29 @@ class User extends Component {
     state = {
         users: [],
         roles: [],
-        isShow: false
+        isShow: false,
     }
 
     getUsers = async () => {
         const result = await reqUsers()
         if (result.status === 0) {
+            console.log('get', result)
             const {users, roles} = result.data
-            this.setState({users, roles})
             this.initRoleName(roles)
+            this.setState({users, roles})
         }
     }
     initRoleName = (roles) => {
-        this.roleName = roles.reduce((pre, role) => {
+        const roleNames = roles.reduce((pre, role) => {
             pre[role._id] = role.name
             return pre
         }, {})
+        this.roleNames = roleNames
     }
-    update = () => {
-
+    updateUser = (user) => {
+        this.user = user;
+        console.log('update', this.user)
+        this.setState({isShow: true})
     }
     delete = (user) => {
         Modal.confirm(
@@ -85,12 +89,25 @@ class User extends Component {
 
 
     }
-    addOrUpdateUser =async () => {
-        this.setState({isShow:false})
+    showAdd = () => {
+        this.user = null
+        this.setState({isShow: true})
+    }
+    addOrUpdateUser = async () => {
+        this.setState({isShow: false})
         const user = this.formRef.current.getFieldsValue()
+        console.log('user', user)
         this.formRef.current.resetFields();
-        const result = await reqAddUser(user)
-        this.getUsers()
+        if (this.user) {
+            user._id = this.user._id
+        }
+        const result = await reqAddorUpdateUsers(user)
+        if (result.status === 0) {
+            message.success(`用户${this.user._id ? '修改' : '创建'}成功`)
+            this.getUsers()
+        } else {
+            message.success(`用户${this.user._id ? '修改' : '创建'}失败`)
+        }
     }
     handleCancel = () => {
         this.setState({isShow: false})
@@ -101,8 +118,10 @@ class User extends Component {
     }
 
     render() {
-        const {users, isShow,roles} = this.state
-        const title = (<Button type='primary' onClick={() => this.setState({isShow: true})}>创建用户</Button>)
+        const {users, isShow, roles} = this.state
+        console.log('render', users)
+        console.log('render', this.user)
+        const title = (<Button type='primary' onClick={this.showAdd}>创建用户</Button>)
         return (
 
             <Card title={title}>
@@ -113,12 +132,13 @@ class User extends Component {
                     columns={this.columns}
                     pagination={{defaultPageSize: PAGE_SIZE}}/>
                 <Modal
-                    title={isShow ? '添加用户' : '删除用户'}
+                    title={this.user ? '修改用户' : '添加用户'}
                     visible={isShow}
+                    destroyOnClose
                     onOk={this.addOrUpdateUser}
                     onCancel={this.handleCancel}
                 >
-                    <AddForm roles={roles} getAddForm={formRef => this.formRef = formRef}/>
+                    <AddForm roles={roles} user={this.user} getAddForm={formRef => this.formRef = formRef}/>
                 </Modal>
             </Card>
         );

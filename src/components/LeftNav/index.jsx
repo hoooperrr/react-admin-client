@@ -9,6 +9,7 @@ import {
     MailOutlined,
 } from '@ant-design/icons';
 import menuI from "../../config/menuConfig";
+import memoryUtils from "../../utils/memoryUtils";
 
 const {SubMenu} = Menu;
 
@@ -22,6 +23,18 @@ class LeftNav extends Component {
         this.menuNodes = this.getMenuList_reduce(menuI);
         // this.setState({})
         // this.forceUpdate()
+    }
+
+    hasAuth = (item) => {
+        const {key, isPublic} = item
+        const {menus} = memoryUtils.user.role
+        const {username} = memoryUtils.user
+        if (isPublic || menus.indexOf(key)!==-1||username==='admin') {
+            return true;
+        } else if(item.children){
+            return !!item.children.find(c=>menus.indexOf(c.key)!==-1)
+        }
+        return false
     }
 
     getMenuList_map = (menuList) => {
@@ -51,33 +64,36 @@ class LeftNav extends Component {
         const path = this.props.location.pathname
         console.log('reduce' + menuList)
         return menuList.reduce((pre, item) => {
-            if (!item.children) {
-                pre.push(<Menu.Item key={item.key} icon={''}>
-                    <Link to={item.key}>
-                        {item.title}
-                    </Link>
-                </Menu.Item>);
-                return pre;
-            } else {
+            if (this.hasAuth(item)) {
+                if (!item.children) {
+                    pre.push(<Menu.Item key={item.key} icon={''}>
+                        <Link to={item.key}>
+                            {item.title}
+                        </Link>
+                    </Menu.Item>);
+                    return pre;
+                } else {
+                    const cItem = item.children.find(i => path.indexOf(i.key) === 0);
+                    if (cItem) this.open = item.key;
 
-                const cItem = item.children.find(i => path.indexOf(i.key) === 0);
-                if (cItem) this.open = item.key;
-
-                pre.push(<SubMenu key={item.key} icon={<MailOutlined/>} title={item.title}>
-                    {this.getMenuList_reduce(item.children)}
-                </SubMenu>);
-                return pre;
+                    pre.push(<SubMenu key={item.key} icon={<MailOutlined/>} title={item.title}>
+                        {this.getMenuList_reduce(item.children)}
+                    </SubMenu>);
+                    return pre;
+                }
             }
+            return pre;
+
         }, []);
     }
 
 
     render() {
         let path = this.props.location.pathname;
-        if(path.indexOf('/product')===0) {
-            path='/product'
+        if (path.indexOf('/product') === 0) {
+            path = '/product'
         }
-            return (
+        return (
             <div className='left-nav'>
                 <Link to='/home' className='left-nav-header'>
                     {/*<header>*/}

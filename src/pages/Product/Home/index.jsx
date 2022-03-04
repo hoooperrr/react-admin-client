@@ -157,6 +157,7 @@ class Home extends Component {
                         columns={this.columns}
                         loading={loading}
                         pagination={{
+                            current:this.pageNum,
                             total,
                             showQuickJumper: true,
                             defaultPageSize: PAGE_SIZE,

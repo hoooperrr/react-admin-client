@@ -6,6 +6,7 @@ import AddFormContent from "./AddFormContent";
 import AuthTree from "./AuthTree";
 import memoryUtils from "../../utils/memoryUtils";
 import {formateDate} from "../../utils/dateUtils";
+import storageUtils from "../../utils/storageUtils";
 
 class Role extends Component {
     state = {
@@ -104,13 +105,21 @@ class Role extends Component {
         const result = await reqUpdateRole(role)
 
         if (result.status === 0) {
-            message.success('角色权限修改成功')
-            this.setState(state => {
-                // roles.find(r => r._id === role._id).menus = role.menus
-                return {
-                    roles: [...state.roles]
-                }
-            })
+            if (role._id === memoryUtils.user.role_id) {
+                memoryUtils.user = {}
+                storageUtils.removeUser()
+                this.props.history.replace('/login')
+                message.info('您的用户角色权限已更新，请重新登录')
+            } else {
+                message.success('角色权限修改成功')
+                this.setState(state => {
+                        // roles.find(r => r._id === role._id).menus = role.menus
+                        return {
+                            roles: [...state.roles]
+                        }
+                    }
+                )
+            }
         } else {
             message.error('角色权限修改失败')
 
@@ -140,7 +149,13 @@ class Role extends Component {
                     rowKey='_id'
                     dataSource={roles}
                     columns={this.columns}
-                    rowSelection={{type: 'radio', selectedRowKeys: [role._id]}}
+                    rowSelection={{
+                        type: 'radio',
+                        selectedRowKeys: [role._id],
+                        onSelect: (role) => {
+                            this.setState({role})
+                        }
+                    }}
                     pagination={{defaultPageSize: PAGE_SIZE}}
                     onRow={this.handleRow}
                 >
