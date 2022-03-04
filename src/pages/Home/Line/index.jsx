@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ReactECharts from 'echarts-for-react';
 import {Button, Card} from "antd";
 
-class Bar extends Component {
+class Line extends Component {
     state = {
         sales: [121, 121, 561, 899, 545, 242, 410],
         stores: [123, 200, 566, 966, 600, 300, 423],
@@ -23,11 +23,11 @@ class Bar extends Component {
             series: [
                 {
                     name: '销量',
-                    type: 'bar',
+                    type: 'line',
                     data: sales,
                 }, {
                     name: '库存',
-                    type: 'bar',
+                    type: 'line',
                     data: stores,
                 }
             ]
@@ -44,27 +44,23 @@ class Bar extends Component {
     }
 
     render() {
-        const title = '柱状图一'
         const {sales, stores} = this.state
         return (
-            <div>
-                <Card>
-                    <Button type='primary' onClick={this.updateData}>更新</Button>
-                </Card>
-                <Card title={title}>
+
+                <Card  className='home-line'>
                     <ReactECharts option={this.getOption(sales, stores)}
                                   notMerge={true}
                                   lazyUpdate={true}
+
                                   theme={"theme_name"}
                         // onChartReady={this.onChartReadyCallback}
                         // onEvents={EventsDict}
                         // opts={}
                     />
                 </Card>
-            </div>
 
         );
     }
 }
 
-export default Bar;
+export default Line;

@@ -10,6 +10,7 @@ import {PlusOutlined} from "@ant-design/icons";
 import LinkButton from "../../../components/LinkButton";
 import {reqProducts, reqSearchProducts, reqUpdateProductStatus} from "../../../api";
 import {PAGE_SIZE} from "../../../utils/constants";
+import memoryUtils from "../../../utils/memoryUtils";
 
 const {Option} = Select;
 // {
@@ -23,6 +24,7 @@ const {Option} = Select;
 // }
 // }
 class Home extends Component {
+
     constructor(props) {
         super(props);
         this.columns = [
@@ -61,11 +63,11 @@ class Home extends Component {
                     //指定了当前行的数据对象参数就是该数据，否则是整行对象
                     return (<span>
                         <LinkButton
-                            onClick={() => this.props.history.push('/product/detail', {product})}>
+                            onClick={() => this.toDetail(product)}>
                             详情
                         </LinkButton>
                         <LinkButton
-                            onClick={() => this.props.history.push('/product/addUpdate', product)}>修改</LinkButton>
+                            onClick={() => this.toUpdate(product)}>修改</LinkButton>
                     </span>)
                 }
             }
@@ -84,6 +86,15 @@ class Home extends Component {
         }],
         searchContent: '',
         searchType: 'productName',
+    }
+
+    toDetail = (product) => {
+        memoryUtils.product = product
+        this.props.history.push('/product/detail')
+    }
+    toUpdate = (product) => {
+        memoryUtils.product = product
+        this.props.history.push('/product/addUpdate')
     }
 
     getProducts = async (pageNum) => {
@@ -157,7 +168,7 @@ class Home extends Component {
                         columns={this.columns}
                         loading={loading}
                         pagination={{
-                            current:this.pageNum,
+                            current: this.pageNum,
                             total,
                             showQuickJumper: true,
                             defaultPageSize: PAGE_SIZE,

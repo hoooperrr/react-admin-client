@@ -11,6 +11,7 @@ import LinkButton from "../../../components/LinkButton";
 import {reqCategory, reqProductAddOrUpdate} from "../../../api";
 import PicturesWall from "./PicturesWall";
 import RichTextEdit from "./RichTextEdit";
+import memoryUtils from "../../../utils/memoryUtils";
 
 const {Item} = Form;
 const {TextArea} = Input;
@@ -162,15 +163,18 @@ class AddUpdate extends Component {
     }
 
     componentWillMount() {
-        const product = this.props.location.state || null
-        this.isUpdate = !!product;//强制转换为Boolean
+        const product = memoryUtils.product || null
+        this.isUpdate = !!product._id;//强制转换为Boolean
         this.product = product || {}
         console.log(product)
         this.getCategory('0')
-
     }
 
     componentDidMount() {
+    }
+
+    componentWillUnmount() {
+        memoryUtils.product={}
     }
 
     render() {

@@ -8,6 +8,7 @@ import '../index.less'
 import LinkButton from "../../../components/LinkButton";
 import {BASE_IMG_URL} from "../../../utils/constants";
 import {reqProductCategory} from "../../../api";
+import memoryUtils from "../../../utils/memoryUtils";
 
 const {Item} = List;
 
@@ -17,7 +18,7 @@ class Detail extends Component {
         cName2: '',
     }
     getCategory = async () => {
-        const {pCategoryId, categoryId} = this.props.location.state.product
+        const {pCategoryId, categoryId} = memoryUtils.product
         if (pCategoryId === '0') {
             const result = await reqProductCategory(categoryId)
             const cName1 = result.data.name
@@ -36,6 +37,10 @@ class Detail extends Component {
     componentDidMount() {
         this.getCategory()
     }
+    componentWillUnmount() {
+        memoryUtils.product={}
+    }
+
 
     render() {
         const title = (
@@ -49,7 +54,7 @@ class Detail extends Component {
                 商品详情
             </span>
         )
-        const {name, desc, price, detail, imgs} = this.props.location.state.product
+        const {name, desc, price, detail, imgs} = memoryUtils.product
         const {cName1, cName2} = this.state
         return (
             <Card title={title} className='product-detail'>

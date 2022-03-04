@@ -49,9 +49,6 @@ class Bar extends Component {
         return (
             <div>
                 <Card>
-                    <Button type='primary' onClick={this.updateData}>更新</Button>
-                </Card>
-                <Card title={title}>
                     <ReactECharts option={this.getOption(sales, stores)}
                                   notMerge={true}
                                   lazyUpdate={true}
