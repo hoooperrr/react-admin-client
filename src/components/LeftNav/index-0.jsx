@@ -10,8 +10,6 @@ import {
 } from '@ant-design/icons';
 import menuI from "../../config/menuConfig";
 import memoryUtils from "../../utils/memoryUtils";
-import {connect} from "react-redux";
-import {setHeadTitle} from '../../redux/actions'
 
 const {SubMenu} = Menu;
 
@@ -29,12 +27,12 @@ class LeftNav extends Component {
 
     hasAuth = (item) => {
         const {key, isPublic} = item
-        const {menus} = this.props.user.role
-        const {username} = this.props.user
-        if (isPublic || menus.indexOf(key) !== -1 || username === 'admin') {
+        const {menus} = memoryUtils.user.role
+        const {username} = memoryUtils.user
+        if (isPublic || menus.indexOf(key)!==-1||username==='admin') {
             return true;
-        } else if (item.children) {
-            return !!item.children.find(c => menus.indexOf(c.key) !== -1)
+        } else if(item.children){
+            return !!item.children.find(c=>menus.indexOf(c.key)!==-1)
         }
         return false
     }
@@ -68,10 +66,7 @@ class LeftNav extends Component {
         return menuList.reduce((pre, item) => {
             if (this.hasAuth(item)) {
                 if (!item.children) {
-                    if (item.key === path || path.indexOf(item.key) === 0) {
-                        this.props.setHeadTitle(item.title)
-                    }
-                    pre.push(<Menu.Item key={item.key} icon={''} onClick={() => this.props.setHeadTitle(item.title)}>
+                    pre.push(<Menu.Item key={item.key} icon={''}>
                         <Link to={item.key}>
                             {item.title}
                         </Link>
@@ -88,6 +83,7 @@ class LeftNav extends Component {
                 }
             }
             return pre;
+
         }, []);
     }
 
@@ -126,9 +122,4 @@ class LeftNav extends Component {
     }
 }
 
-export default connect(state => ({
-    headTitle: state.headTitle,
-    user: state.user,
-}), {
-    setHeadTitle
-})(withRouter(LeftNav));
+export default withRouter(LeftNav);

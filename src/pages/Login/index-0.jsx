@@ -4,15 +4,13 @@ import './index.less'
 import {
     Form,
     Input,
-    Button, message, Tag,
+    Button, message,
 } from 'antd';
 import {UserOutlined, LockOutlined} from '@ant-design/icons';
 import logo from '../../assets/images/logo.png'
 import {reqLogin} from "../../api";
 import memoryUtils from '../../utils/memoryUtils'
 import storageUtils from '../../utils/storageUtils'
-import {connect} from "react-redux";
-import {login} from '../../redux/actions'
 // 路由 登录
 const Item = Form.Item;
 
@@ -26,8 +24,6 @@ class Login extends Component {
         //只有检验通过调用
         console.log('Received values of form: ', values);
         const {username, password} = values
-        this.props.login(username, password)
-        /*
         // try {
         const response = await reqLogin(username, password);
         console.log(response);
@@ -40,17 +36,15 @@ class Login extends Component {
         //     console.log(error.message);
         // }
         const result = response;
-
-         */
-        // if (this.props.user.errorMsg === undefined) {
-        //     message.success('登陆成功');
-        //     // const user = result.data;
-        //     // memoryUtils.user = user;
-        //     // storageUtils.saveUser(user);
-        //     // this.props.history.replace('/home');
-        // } else {
-        //     message.error(this.props.user.errorMsg)
-        // }
+        if (result.status === 0) {
+            message.success('登陆成功');
+            const user = result.data;
+            memoryUtils.user = user;
+            storageUtils.saveUser(user);
+            this.props.history.replace('/home');
+        } else {
+            message.error(result.msg)
+        }
     }
 
     validator = (rule, value) => {
@@ -63,12 +57,10 @@ class Login extends Component {
     }
 
     render() {
-        // const user = memoryUtils.user;
-        const user = this.props.user;
-        if (user && user._id) {
-            return <Redirect to='/home'/>
+        const user = memoryUtils.user;
+        if(user && user._id) {
+            return <Redirect to='/'/>
         }
-        const errorMsg = this.props.user.errorMsg
         return (
             <div className="login">
                 <header className="login-header">
@@ -76,7 +68,6 @@ class Login extends Component {
                     <h1>React项目: 后台管理系统</h1>
                 </header>
                 <section className="login-content">
-                    {errorMsg?(<Tag>{errorMsg}</Tag>):null}
                     <h2>用户登陆</h2>
                     <Form
                         name="normal_login"
@@ -138,10 +129,9 @@ class Login extends Component {
                     </Form>
                 </section>
             </div>
+
         );
     }
 }
 
-export default connect(state => ({
-    user: state.user
-}), {login})(Login);
+export default Login;

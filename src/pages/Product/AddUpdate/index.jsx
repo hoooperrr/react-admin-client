@@ -12,6 +12,7 @@ import {reqCategory, reqProductAddOrUpdate} from "../../../api";
 import PicturesWall from "./PicturesWall";
 import RichTextEdit from "./RichTextEdit";
 import memoryUtils from "../../../utils/memoryUtils";
+import {connect} from "react-redux";
 
 const {Item} = Form;
 const {TextArea} = Input;
@@ -257,7 +258,6 @@ class AddUpdate extends Component {
                                     return Promise.reject(new Error('The two passwords that you entered do not match!'));
                                 },
                             }),]}
-
                     >
 
                         <Input placeholder='请输入商品价格' type='number' min={1} max={10000} addonAfter='元'/>
@@ -293,4 +293,6 @@ class AddUpdate extends Component {
     }
 }
 
-export default AddUpdate;
+export default connect(state=>({
+    user:state.user
+}),{})(AddUpdate);

@@ -5,14 +5,18 @@ import App from './App';
 import {BrowserRouter} from "react-router-dom";
 import storageUtils from "./utils/storageUtils";
 import memoryUtils from "./utils/memoryUtils";
+import {Provider} from "react-redux";
+import store from "./redux/store";
 
 memoryUtils.user = storageUtils.getUser()
 
 ReactDOM.render(
-      <BrowserRouter>
-          <App />
-      </BrowserRouter>,
-  document.getElementById('root')
+    <Provider store={store}>
+        <BrowserRouter>
+            <App/>
+        </BrowserRouter>
+    </Provider>,
+    document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

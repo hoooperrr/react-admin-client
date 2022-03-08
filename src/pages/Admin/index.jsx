@@ -13,12 +13,13 @@ import Bar from "../Charts/bar";
 import Line from "../Charts/line";
 import Pie from "../Charts/pie";
 import NotFound from "../NotFound";
+import {connect} from "react-redux";
 
 const {Header, Footer, Sider, Content} = Layout;
 
 class Admin extends Component {
     render() {
-        const user = memoryUtils.user;
+        const user = this.props.user;
         if (!user || !user._id) {
             // this.props.history.push()
             return <Redirect to='/login'/>
@@ -62,4 +63,4 @@ class Admin extends Component {
     }
 }
 
-export default Admin;
+export default connect(state=>({user:state.user}),{})(Admin);

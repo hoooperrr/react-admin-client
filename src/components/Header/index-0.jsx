@@ -5,12 +5,11 @@ import {reqWeather} from "../../api";
 import memoryUtils from "../../utils/memoryUtils";
 import {formateDate} from "../../utils/dateUtils";
 import menuList from "../../config/menuConfig";
-import {Modal} from 'antd';
-import {ExclamationCircleOutlined} from '@ant-design/icons';
+import { Modal } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import storageUtils from "../../utils/storageUtils";
 import LinkButton from "../LinkButton";
-import {connect} from "react-redux";
-import {logout} from "../../redux/actions";
+
 
 class Header extends Component {
     state = {
@@ -76,9 +75,10 @@ class Header extends Component {
             content: '是否确定退出登录',
             okText: '确认',
             cancelText: '取消',
-            onOk: () => {
-                this.props.logout()
-                // this.props.history.replace('/login')
+            onOk :() =>{
+                storageUtils.removeUser()
+                memoryUtils.user={}
+                this.props.history.replace('/login')
             },
         })
     }
@@ -96,23 +96,22 @@ class Header extends Component {
     render() {
         const {currentTime, city, weather, temperature} = this.state;
         // console.log('get', city, weather, temperature)
-        // const title = this.getTitle();
-        const title = this.props.headTitle;
+        const title = this.getTitle();
         return (
             <div className='my-header'>
                 <div className='header-top'>
-                    <span>欢迎，{this.props.user.username}</span>
+                    <span>欢迎，{memoryUtils.user.username}</span>
 
                     <LinkButton onClick={this.logOut}>退出
-                        {/*<Modal*/}
-                        {/*    title="Title"*/}
-                        {/*    visible={visible}*/}
-                        {/*    onOk={handleOk}*/}
-                        {/*    confirmLoading={confirmLoading}*/}
-                        {/*    onCancel={handleCancel}*/}
-                        {/*>*/}
-                        {/*    <p>{modalText}</p>*/}
-                        {/*</Modal>*/}
+                            {/*<Modal*/}
+                            {/*    title="Title"*/}
+                            {/*    visible={visible}*/}
+                            {/*    onOk={handleOk}*/}
+                            {/*    confirmLoading={confirmLoading}*/}
+                            {/*    onCancel={handleCancel}*/}
+                            {/*>*/}
+                            {/*    <p>{modalText}</p>*/}
+                            {/*</Modal>*/}
                     </LinkButton>
                 </div>
                 <div className='header-bottom'>
@@ -131,9 +130,4 @@ class Header extends Component {
     }
 }
 
-export default connect(
-    state => ({
-        headTitle: state.headTitle,
-        user: state.user,
-    }), {logout}
-)(withRouter(Header));
+export default withRouter(Header);

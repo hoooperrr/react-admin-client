@@ -7,6 +7,8 @@ import AuthTree from "./AuthTree";
 import memoryUtils from "../../utils/memoryUtils";
 import {formateDate} from "../../utils/dateUtils";
 import storageUtils from "../../utils/storageUtils";
+import {connect} from "react-redux";
+import {logout} from "../../redux/actions";
 
 class Role extends Component {
     state = {
@@ -100,15 +102,16 @@ class Role extends Component {
         const {roles, role} = this.state
         this.setState({isAuth: false});
         role.menus = this.treeRef.current.getTree()
-        role.auth_name = memoryUtils.user.username
+        role.auth_name = this.props.user.username
         role.auth_time = Date.now()
         const result = await reqUpdateRole(role)
 
         if (result.status === 0) {
-            if (role._id === memoryUtils.user.role_id) {
-                memoryUtils.user = {}
-                storageUtils.removeUser()
-                this.props.history.replace('/login')
+            if (role._id === this.props.user.role_id) {
+                // memoryUtils.user = {}
+                this.props.logout()
+                // storageUtils.removeUser()
+                // this.props.history.replace('/login')
                 message.info('您的用户角色权限已更新，请重新登录')
             } else {
                 message.success('角色权限修改成功')
@@ -185,4 +188,6 @@ class Role extends Component {
     }
 }
 
-export default Role;
+export default connect(state => ({
+    user: state.user
+}), {logout})(Role);
